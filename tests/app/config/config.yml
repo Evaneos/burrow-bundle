@@ -1,0 +1,22 @@
+framework:
+    secret: "supersecret"
+evaneos_burrow:
+    drivers:
+        default:
+            host: rabbitmq_host
+            port: rabbitmq_port
+            user: rabbitmq_user
+            pwd: rabbitmq_pwd
+    publishers:
+        default:
+            driver: default
+            exchange: rabbitmq_exchange
+    workers:
+        default_worker:
+            driver: default
+            consumer: some_consumer
+            queue: some_queue
+
+services:
+    some_consumer:
+        class: Tests\SomeConsumer
