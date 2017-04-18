@@ -28,8 +28,6 @@ class EvaneosBurrowExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        // var_dump($config); die;
-
         foreach ($config['drivers'] as $name => $driver) {
             $container
                 ->register(sprintf('evaneos_burrow.driver.%s', $name), Driver::class)
