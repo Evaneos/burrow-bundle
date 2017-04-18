@@ -3,10 +3,10 @@ framework:
 evaneos_burrow:
     drivers:
         default:
-            host: rabbitmq_host
-            port: rabbitmq_port
-            user: rabbitmq_user
-            pwd: rabbitmq_pwd
+            host: localhost
+            port: 5672
+            user: guest
+            pwd: guest
     publishers:
         default:
             driver: default

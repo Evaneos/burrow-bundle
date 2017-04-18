@@ -12,6 +12,11 @@ use Evaneos\Daemon\Worker;
 use Symfony\Component\DependencyInjection\Definition;
 use Evaneos\BurrowBundle\WorkerFactory;
 use Evaneos\Daemon\CLI\DaemonWorkerCommand;
+use Burrow\CLI\DeleteExchangeCommand;
+use Burrow\CLI\DeclareExchangeCommand;
+use Burrow\CLI\DeleteQueueCommand;
+use Burrow\CLI\DeclareQueueCommand;
+use Burrow\CLI\BindCommand;
 
 /**
  * This is the class that loads and manages your bundle configuration.
@@ -28,7 +33,12 @@ class EvaneosBurrowExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        // var_dump($config); die;
+        if (!isset($config['default_driver'])) {
+            $keys = array_keys($config['drivers']);
+            $config['default_driver'] = reset($keys);
+        }
+
+        $container->setAlias('evaneos_burrow.default_driver', sprintf('evaneos_burrow.driver.%s', $config['default_driver']));
 
         foreach ($config['drivers'] as $name => $driver) {
             $container
@@ -60,5 +70,36 @@ class EvaneosBurrowExtension extends Extension
                 ->addArgument(sprintf('burrow:consume:%s', $name))
                 ->addTag('console.command');
         }
+
+        $this->loadBurrowCommands($container);
+    }
+
+    private function loadBurrowCommands(ContainerBuilder $container)
+    {
+        $container
+            ->register('evaneos_burrow.command.declare_queue', DeclareQueueCommand::class)
+            ->addArgument(new Reference('evaneos_burrow.default_driver'))
+            ->addMethodCall('setName', ['burrow:command:declare_queue'])
+            ->addTag('console.command');
+        $container
+            ->register('evaneos_burrow.command.delete_queue', DeleteQueueCommand::class)
+            ->addArgument(new Reference('evaneos_burrow.default_driver'))
+            ->addMethodCall('setName', ['burrow:command:delete_queue'])
+            ->addTag('console.command');
+        $container
+            ->register('evaneos_burrow.command.declare_exchange', DeclareExchangeCommand::class)
+            ->addArgument(new Reference('evaneos_burrow.default_driver'))
+            ->addMethodCall('setName', ['burrow:command:declare_exchange'])
+            ->addTag('console.command');
+        $container
+            ->register('evaneos_burrow.command.delete_exchange', DeleteExchangeCommand::class)
+            ->addArgument(new Reference('evaneos_burrow.default_driver'))
+            ->addMethodCall('setName', ['burrow:command:delete_exchange'])
+            ->addTag('console.command');
+        $container
+            ->register('evaneos_burrow.command.bind', BindCommand::class)
+            ->addArgument(new Reference('evaneos_burrow.default_driver'))
+            ->addMethodCall('setName', ['burrow:command:bind'])
+            ->addTag('console.command');
     }
 }
