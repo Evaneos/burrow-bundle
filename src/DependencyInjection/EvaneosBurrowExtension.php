@@ -2,21 +2,21 @@
 
 namespace Evaneos\BurrowBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Burrow\Driver\DriverFactory;
+use Burrow\CLI\BindCommand;
+use Burrow\CLI\DeclareExchangeCommand;
+use Burrow\CLI\DeclareQueueCommand;
+use Burrow\CLI\DeleteExchangeCommand;
+use Burrow\CLI\DeleteQueueCommand;
 use Burrow\Driver;
+use Burrow\Driver\DriverFactory;
 use Burrow\Publisher\AsyncPublisher;
-use Symfony\Component\DependencyInjection\Reference;
-use Evaneos\Daemon\Worker;
-use Symfony\Component\DependencyInjection\Definition;
 use Evaneos\BurrowBundle\WorkerFactory;
 use Evaneos\Daemon\CLI\DaemonWorkerCommand;
-use Burrow\CLI\DeleteExchangeCommand;
-use Burrow\CLI\DeclareExchangeCommand;
-use Burrow\CLI\DeleteQueueCommand;
-use Burrow\CLI\DeclareQueueCommand;
-use Burrow\CLI\BindCommand;
+use Evaneos\Daemon\Worker;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
  * This is the class that loads and manages your bundle configuration.
@@ -59,7 +59,8 @@ class EvaneosBurrowExtension extends Extension
             $definition = new Definition(Worker::class, [
                 new Reference(sprintf('evaneos_burrow.driver.%s', $value['driver'])),
                 new Reference($value['consumer']),
-                $value['queue']
+                $value['queue'],
+                $value['requeue_on_failure'],
             ]);
             $definition->setFactory([WorkerFactory::class, 'build']);
             $container->setDefinition(sprintf('evaneos_burrow.worker.%s', $name), $definition);

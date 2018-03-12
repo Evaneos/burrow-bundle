@@ -16,6 +16,7 @@ evaneos_burrow:
             driver: default
             consumer: some_consumer
             queue: some_queue
+            requeue_on_failure: false
 
 services:
     some_consumer:

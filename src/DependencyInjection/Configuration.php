@@ -58,6 +58,7 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('driver')->end()
                             ->scalarNode('consumer')->end()
                             ->scalarNode('queue')->end()
+                            ->scalarNode('requeue_on_failure')->end()
                         ->end()
                     ->end()
                 ->end()
