@@ -10,6 +10,7 @@ use Burrow\CLI\DeleteQueueCommand;
 use Burrow\Driver;
 use Burrow\Driver\DriverFactory;
 use Burrow\Publisher\AsyncPublisher;
+use Evaneos\BurrowBundle\PublisherFactory;
 use Evaneos\BurrowBundle\WorkerFactory;
 use Evaneos\Daemon\CLI\DaemonWorkerCommand;
 use Evaneos\Daemon\Worker;
@@ -49,10 +50,13 @@ class EvaneosBurrowExtension extends Extension
         }
 
         foreach ($config['publishers'] as $name => $value) {
-            $container
-                ->register(sprintf('evaneos_burrow.publisher.%s', $name), AsyncPublisher::class)
-                ->addArgument(new Reference(sprintf('evaneos_burrow.driver.%s', $value['driver'])))
-                ->addArgument($value['exchange']);
+            $definition = new Definition(AsyncPublisher::class, [
+                new Reference(sprintf('evaneos_burrow.driver.%s', $value['driver'])),
+                $value['exchange'],
+                $value['serializingStrategy']
+            ]);
+            $definition->setFactory([PublisherFactory::class, 'buildAsync']);
+            $container->setDefinition(sprintf('evaneos_burrow.publisher.%s', $name), $definition);
         }
 
         foreach ($config['workers'] as $name => $value) {

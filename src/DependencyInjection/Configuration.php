@@ -2,6 +2,7 @@
 
 namespace Evaneos\BurrowBundle\DependencyInjection;
 
+use Evaneos\BurrowBundle\PublisherFactory;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -48,6 +49,10 @@ class Configuration implements ConfigurationInterface
                         ->children()
                             ->scalarNode('driver')->end()
                             ->scalarNode('exchange')->end()
+                            ->enumNode('serializingStrategy')
+                                ->values(PublisherFactory::$SERIALIZING_STRATEGIES)
+                                ->defaultValue(PublisherFactory::DEFAULT_SERIALIZING_STRATEGY)
+                            ->end()
                         ->end()
                     ->end()
                 ->end()
