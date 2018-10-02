@@ -16,12 +16,12 @@
         "psr-4": { "Tests\\": "tests" }
     },
     "require": {
-        "symfony/http-kernel": "~3.0",
-        "evaneos/burrow": "~4.0"
+        "symfony/http-kernel": "^3.0|^4.0",
+        "evaneos/burrow": "^4.0"
     },
     "require-dev": {
-        "symfony/framework-bundle": "~3.0",
-        "symfony/yaml": "~3.0",
-        "symfony/console": "~3.0"
+        "symfony/framework-bundle": "^3.0|^4.0",
+        "symfony/yaml": "^3.0|^4.0",
+        "symfony/console": "^3.0|^4.0"
     }
 }
