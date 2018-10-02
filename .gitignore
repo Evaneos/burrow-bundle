@@ -1,3 +1,4 @@
 /vendor/
 /tests/app/cache/
 /tests/app/logs/
+composer.lock
