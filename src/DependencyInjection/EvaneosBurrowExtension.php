@@ -65,6 +65,7 @@ class EvaneosBurrowExtension extends Extension
                 new Reference($value['consumer']),
                 $value['queue'],
                 $value['requeue_on_failure'],
+                new Reference('logger'),
             ]);
             $definition->setFactory([WorkerFactory::class, 'build']);
             $container->setDefinition(sprintf('evaneos_burrow.worker.%s', $name), $definition);

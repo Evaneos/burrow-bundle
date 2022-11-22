@@ -7,6 +7,7 @@ use Burrow\Driver;
 use Burrow\Handler\HandlerBuilder;
 use Burrow\QueueConsumer;
 use Evaneos\Daemon\Worker;
+use Psr\Log\LoggerInterface;
 
 class WorkerFactory
 {
@@ -24,7 +25,8 @@ class WorkerFactory
         Driver $driver,
         QueueConsumer $consumer,
         $queue,
-        $requeueOnFailure = true
+        $requeueOnFailure = true,
+        LoggerInterface $logger
     )
     {
         $handlerBuilder = new HandlerBuilder($driver);
@@ -33,7 +35,7 @@ class WorkerFactory
             $handlerBuilder->doNotRequeueOnFailure();
         }
 
-        $handler = $handlerBuilder->async()->build($consumer);
+        $handler = $handlerBuilder->async()->log($logger)->build($consumer);
         $daemon = new QueueHandlingDaemon($driver, $handler, $queue);
 
         return new Worker($daemon);
